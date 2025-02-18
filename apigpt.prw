@@ -4,32 +4,60 @@
 #include "RESTFUL.CH"
 
 User Function ChamaChatGPT()
-
-    Local cKey := GetMV("CHATGPT_API_KEY") // Chave da API no Appserver.ini LOCAL
+    Local cPrompt := "Escreva um oi"
+    Local cKey := GetMV("MV_X_KEY") // Chave da API no Appserver.ini LOCAL
+    Local choices
+    Local conteudo := ""
     private oRest:=FwRest():New("https://api.openai.com")
+    private cPath:= "/v1/chat/completions"
     private aHeader:= {}
-    Local cPrompt := "Explique como funciona um pedido de venda no Protheus."
+    private cBody := ""
+    
 
+    //Header
+    Aadd(aHeader,"Authorization: Bearer " + cKey)
+    Aadd(aHeader, "Content-Type: application/json")
 
-    oRest:setPath("/v1/chat/completions")
-    Aadd(aHeader,"Authorization: Bearer ")
-    Aadd(aHeader, cKey)
-    Aadd(aHeader, "Content-Type", "application/json")
+    //Body
+    cBody := '{"model": "gpt-4", "messages": ['
+    cBody += '{"role": "user", "content": "' + cPrompt + '"}'
+    cBody+= ']}'
+
+    oRest:SetPath(cPath)
+    oRest:SetPostParams(cBody)
 
     If oRest:Post(aHeader)
-        CanOut("POST", oRest:GetResult())
-    else
-        CanOut("POST", oRest:GetLastError())
+        ConOut("POST", oRest:GetResult())
+    Else
+        ConOut("POST", oRest:GetLastError())
+
+    Endif
 
     private resultado := oRest:GetResult()
-    private erro := oRest:GeetLastError()
+    private erro := oRest:GetLastError()
+    
+    jDados := JsonObject():New()
+    cError := jDados:FromJson(resultado)
 
-    alert(resultado)
+    If ! Empty(cError)
+    FWAlertError("Houve um erro:" + cError, "Falha")
+    Else
+
+    Endif
+
+    choices := jDados:GetJsonObject("choices") // Array choices
+
+    If ValType(choices) == "A"
+        conteudo += choices[1]:GetJsonObject("message")
+    endif
+
+    alert(conteudo)
     alert(erro)
     ConOut("Fim")
 
-    // Corpo da requisição
-    Local cBody := '{ "model": "gpt-4", "messages": [{"role": "user", "content": "' + cPrompt + '"}] }'
-   
 Return
+
+    // Corpo da requisição
+    // Local cBody := '{ "model": "gpt-4", "messages": [{"role": "user", "content": "' + cPrompt + '"}] }'
+   
  
