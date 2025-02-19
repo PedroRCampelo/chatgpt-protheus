@@ -82,7 +82,9 @@ Return
 
 User Function ChamaChatGPT()
     Local cPrompt := "Escreva um oi"
-    Local cKey := GetMV("MV_X_KEY") // Chave da API no Appserver.ini LOCAL
+    Local cDevelopMsg1 := "Você é um assistente virtual para funcionalidades do TOTVS Protheus."
+    Local cDevelopMsg2 := "Ao final de cada resposta escreva: Esta resposta é gerada automática baseada em um modelo de IA não oficial TOTVS"
+    Local cKey := GetMV("MV_X_KEY") // Chave da API no Parâmetro customizado
     Local choices
     Local conteudo := ""
     private oRest:=FwRest():New("https://api.openai.com")
@@ -95,6 +97,9 @@ User Function ChamaChatGPT()
     Aadd(aHeader, "Content-Type: application/json")
 
     //Body
+    cBody := '{"model": "gpt-4", "messages": ['
+    cBody += '{"role": "developer", "content": "' + cDevelopMsg1 + cDevelopMsg2 + '"}'
+    cBody+= ']},'
     cBody := '{"model": "gpt-4", "messages": ['
     cBody += '{"role": "user", "content": "' + cPrompt + '"}'
     cBody+= ']}'
