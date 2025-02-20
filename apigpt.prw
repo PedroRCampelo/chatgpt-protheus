@@ -21,15 +21,16 @@ User Function zFuncao()
     Private bBlocoIni   := {|| /*fSuaFuncao()*/ } //Aqui voce pode acionar funcoes customizadas que irao ser acionadas ao abrir a dialog 
     //caixaperg 
     Private oMulcaixaperg 
-    Private cMulcaixaperg    := ''  
-    //submit 
-    Private oBtnsubmit 
-    Private cBtnsubmit    := 'Button'  
-    Private bBtnsubmit    := {|| MsgInfo(submit(cMulcaixaperg, cMulObj3), 'Atencao submit')}  
+    Private cMulcaixaperg    := ''   
     //objeto3 
     Private oMulObj3 
     Private cMulObj3    := ''  
-    
+     //submit 
+    Private oBtnsubmit 
+    Private cBtnsubmit    := 'Button'  
+
+    Private bBtnsubmit   := {|| MsgInfo("FUNCAO", 'Atencao submit')} 
+
     //Cria a dialog
     oDialogPvt := TDialog():New(0, 0, nJanAltura, nJanLargur, cJanTitulo, , , , , , nCorFundo, , , lDimPixels)
     
@@ -61,32 +62,17 @@ User Function zFuncao()
     FWRestArea(aArea)
 Return
 
-/*/{Protheus.doc} submit
-    (long_description)
-    @type  Static Function
-    @author user
-    @since 19/02/2025
-    @version version
-    @param param_name, param_type, param_descr
-    @return return_var, return_type, return_description
-    @example
-    (examples)
-    @see (links_or_references)
-/*/
-Static Function submit(pergunta, resposta)
-    resposta += M->pergunta
-    alert(M->pergunta)
-    alert(M->resposta)
+Static Function submit(question, response)
+     
 
 Return 
 
-User Function ChamaChatGPT()
-    Local cPrompt := "Escreva um oi"
-    Local cDevelopMsg1 := "Você é um assistente virtual para funcionalidades do TOTVS Protheus."
-    Local cDevelopMsg2 := "Ao final de cada resposta escreva: Esta resposta é gerada automática baseada em um modelo de IA não oficial TOTVS"
+Static Function ChamaChatGPT(msg1)
+    Local cPrompt := msg1
+    Local cDevelopMsg1 := "Você é um assistente virtual para funcionalidades do TOTVS Protheus. Ao final de cada resposta escreva: Esta resposta é gerada automática baseada em um modelo de IA não oficial TOTVS"
     Local cKey := GetMV("MV_X_KEY") // Chave da API no Parâmetro customizado
-    Local choices
-    Local conteudo := ""
+    Local choicesJson
+    Local messageJson
     private oRest:=FwRest():New("https://api.openai.com")
     private cPath:= "/v1/chat/completions"
     private aHeader:= {}
@@ -98,7 +84,7 @@ User Function ChamaChatGPT()
 
     //Body
     cBody := '{"model": "gpt-4", "messages": ['
-    cBody += '{"role": "developer", "content": "' + cDevelopMsg1 + cDevelopMsg2 + '"}'
+    cBody += '{"role": "developer", "content": "' + cDevelopMsg1 + '"}'
     cBody+= ']},'
     cBody := '{"model": "gpt-4", "messages": ['
     cBody += '{"role": "user", "content": "' + cPrompt + '"}'
@@ -126,19 +112,9 @@ User Function ChamaChatGPT()
 
     Endif
 
-    choices := jDados:GetJsonObject("choices") // Array choices
-
-    If ValType(choices) == "A"
-        conteudo += choices[1]:GetJsonObject("message")
-    endif
-
-    alert(conteudo)
-    alert(erro)
-    ConOut("Fim")
-
-Return
-
-    // Corpo da requisição
-    // Local cBody := '{ "model": "gpt-4", "messages": [{"role": "user", "content": "' + cPrompt + '"}] }'
-   
+    choicesJson := jDados:GetJsonObject("choices") // Array choices
+    messageJson := choicesJson[1]:GetJsonObject("message") // Json message
+    content := messageJson:GetJsonObject("content") // Content - Response to sent to the client
  
+Return content
+
