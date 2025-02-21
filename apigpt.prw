@@ -8,7 +8,7 @@ User Function zFuncao()
     Local nCorFundo     := RGB(238, 238, 238)
     Local nJanAltura    := 330
     Local nJanLargur    := 644 
-    Local cJanTitulo    := 'PDialogMaker - Versao 1.02'
+    Local cJanTitulo    := 'Assistente de perguntas'
     Local lDimPixels    := .T. 
     Local lCentraliz    := .T. 
     Local nObjLinha     := 0
@@ -19,17 +19,19 @@ User Function zFuncao()
     Private oFontPadrao := TFont():New(cFontNome, , -12)
     Private oDialogPvt 
     Private bBlocoIni   := {|| /*fSuaFuncao()*/ } //Aqui voce pode acionar funcoes customizadas que irao ser acionadas ao abrir a dialog 
+
     //caixaperg 
     Private oMulcaixaperg 
     Private cMulcaixaperg    := ''   
+
     //objeto3 
     Private oMulObj3 
-    Private cMulObj3    := ''  
+    Private cMulObj3    := ''
+
      //submit 
     Private oBtnsubmit 
-    Private cBtnsubmit    := 'Button'  
-
-    Private bBtnsubmit   := {|| MsgInfo("FUNCAO", 'Atencao submit')} 
+    Private cBtnsubmit    := 'Perguntar'  
+    Private bBtnsubmit   := {|| MsgInfo(cMulObj3:=ChamaChatGPT(cMulcaixaperg), 'Atencao submit')}   
 
     //Cria a dialog
     oDialogPvt := TDialog():New(0, 0, nJanAltura, nJanLargur, cJanTitulo, , , , , , nCorFundo, , , lDimPixels)
@@ -62,14 +64,9 @@ User Function zFuncao()
     FWRestArea(aArea)
 Return
 
-Static Function submit(question, response)
-     
-
-Return 
-
 Static Function ChamaChatGPT(msg1)
     Local cPrompt := msg1
-    Local cDevelopMsg1 := "Você é um assistente virtual para funcionalidades do TOTVS Protheus. Ao final de cada resposta escreva: Esta resposta é gerada automática baseada em um modelo de IA não oficial TOTVS"
+    // Local cDevelopMsg1 := "Você é um assistente virtual para funcionalidades do TOTVS Protheus. Ao final de cada resposta escreva: Esta resposta é gerada automática baseada em um modelo de IA não oficial TOTVS"
     Local cKey := GetMV("MV_X_KEY") // Chave da API no Parâmetro customizado
     Local choicesJson
     Local messageJson
@@ -84,9 +81,8 @@ Static Function ChamaChatGPT(msg1)
 
     //Body
     cBody := '{"model": "gpt-4", "messages": ['
-    cBody += '{"role": "developer", "content": "' + cDevelopMsg1 + '"}'
-    cBody+= ']},'
-    cBody := '{"model": "gpt-4", "messages": ['
+    cBody += '{"role": "developer", "content": "Você é um assistente virtual do ERP TOTVS Protheus"},'
+    cBody += '{"role": "developer", "content": "Responda sem caracteres especiais e acentuacao"},'
     cBody += '{"role": "user", "content": "' + cPrompt + '"}'
     cBody+= ']}'
 
@@ -99,7 +95,9 @@ Static Function ChamaChatGPT(msg1)
         ConOut("POST", oRest:GetLastError())
 
     Endif
-
+ 
+    // Quando da Erro a variável cError não está sendo preenchida
+    
     private resultado := oRest:GetResult()
     private erro := oRest:GetLastError()
     
@@ -115,6 +113,8 @@ Static Function ChamaChatGPT(msg1)
     choicesJson := jDados:GetJsonObject("choices") // Array choices
     messageJson := choicesJson[1]:GetJsonObject("message") // Json message
     content := messageJson:GetJsonObject("content") // Content - Response to sent to the client
+
+
  
 Return content
 
