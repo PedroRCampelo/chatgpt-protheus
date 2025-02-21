@@ -82,6 +82,7 @@ Static Function ChamaChatGPT(msg1)
     cBody := '{"model": "gpt-4", "messages": ['
     cBody += '{"role": "developer", "content": "voce e um assistente virtual do erp totvs protheus"},'
     cBody += '{"role": "developer", "content": "retire a acentuacao da resposta"},'
+    cBody += '{"role": "developer", "content": "utilize sites como rfbsistemas.com.br e tdn totvs para buscar a resposta"},'
     cBody += '{"role": "developer", "content": "ao final da resposta explique que nao e uma resposta oficial totvs"},'
     cBody += '{"role": "user", "content": "' + cPrompt + '"}'
     cBody += ']}'
