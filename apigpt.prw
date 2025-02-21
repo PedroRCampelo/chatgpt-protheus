@@ -1,4 +1,4 @@
-#include "protheus.ch"
+#include "PROTHEUS.ch"
 #include "parmtype.ch"
 #include "TOTVS.CH""
 #include "RESTFUL.CH"
@@ -66,7 +66,6 @@ Return
 
 Static Function ChamaChatGPT(msg1)
     Local cPrompt := msg1
-    // Local cDevelopMsg1 := "Você é um assistente virtual para funcionalidades do TOTVS Protheus. Ao final de cada resposta escreva: Esta resposta é gerada automática baseada em um modelo de IA não oficial TOTVS"
     Local cKey := GetMV("MV_X_KEY") // Chave da API no Parâmetro customizado
     Local choicesJson
     Local messageJson
@@ -81,10 +80,11 @@ Static Function ChamaChatGPT(msg1)
 
     //Body
     cBody := '{"model": "gpt-4", "messages": ['
-    cBody += '{"role": "developer", "content": "Você é um assistente virtual do ERP TOTVS Protheus"},'
-    cBody += '{"role": "developer", "content": "Responda sem caracteres especiais e acentuacao"},'
+    cBody += '{"role": "developer", "content": "voce e um assistente virtual do erp totvs protheus"},'
+    cBody += '{"role": "developer", "content": "retire a acentuacao da resposta"},'
+    cBody += '{"role": "developer", "content": "ao final da resposta explique que nao e uma resposta oficial totvs"},'
     cBody += '{"role": "user", "content": "' + cPrompt + '"}'
-    cBody+= ']}'
+    cBody += ']}'
 
     oRest:SetPath(cPath)
     oRest:SetPostParams(cBody)
