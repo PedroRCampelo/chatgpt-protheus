@@ -31,7 +31,7 @@ User Function zFuncao()
      //submit 
     Private oBtnsubmit 
     Private cBtnsubmit    := 'Perguntar'  
-    Private bBtnsubmit   := {|| MsgInfo(cMulObj3:=ChamaChatGPT(cMulcaixaperg), 'Atencao submit')}   
+    Private bBtnsubmit   := {|| cMulObj3:=ChamaChatGPT(cMulcaixaperg)}   
 
     //Cria a dialog
     oDialogPvt := TDialog():New(0, 0, nJanAltura, nJanLargur, cJanTitulo, , , , , , nCorFundo, , , lDimPixels)
@@ -81,8 +81,7 @@ Static Function ChamaChatGPT(msg1)
     //Body
     cBody := '{"model": "gpt-4", "messages": ['
     cBody += '{"role": "developer", "content": "voce e um assistente virtual do erp totvs protheus"},'
-    cBody += '{"role": "developer", "content": "retire a acentuacao da resposta"},'
-    cBody += '{"role": "developer", "content": "utilize sites como rfbsistemas.com.br e tdn totvs para buscar a resposta"},'
+    cBody += '{"role": "developer", "content": "priorize sites oficiais TOTVS para buscar respostas"},'
     cBody += '{"role": "developer", "content": "ao final da resposta explique que nao e uma resposta oficial totvs"},'
     cBody += '{"role": "user", "content": "' + cPrompt + '"}'
     cBody += ']}'
@@ -97,7 +96,7 @@ Static Function ChamaChatGPT(msg1)
 
     Endif
  
-    // Quando da Erro a variável cError não está sendo preenchida
+    // !!!!!!Quando da Erro a variável cError não está sendo preenchida!!!!!!!
     
     private resultado := oRest:GetResult()
     private erro := oRest:GetLastError()
